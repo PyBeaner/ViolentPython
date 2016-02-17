@@ -42,7 +42,7 @@ def portScan(host, ports):
 
 
 def main():
-    parser = optparse.OptionParser("usage%prog --host <target host> --port <target port>")
+    parser = optparse.OptionParser("usage%prog --host <target host> --ports <target port[s]>")
     parser.add_option("--host", dest='host', type='string', help='specific target host')
     parser.add_option("--ports", dest='ports', type='string', help='specific target port[s] separated by comma')
     options, args = parser.parse_args()
