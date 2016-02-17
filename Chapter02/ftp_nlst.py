@@ -24,4 +24,7 @@ if __name__ == '__main__':
     password = 'hello@python.org'
     ftp = ftplib.FTP(host)
     ftp.login(user, password)
+
+    # ftp.retrlines('RETR file', callback=None) # 读取文件内容
+    # ftp.storlines('STOR file', callback=None) #　写入文件
     print(indexes(ftp))
