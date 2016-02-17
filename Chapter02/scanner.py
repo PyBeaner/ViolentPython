@@ -1,18 +1,25 @@
 import optparse
 from socket import *
+from threading import Thread, Semaphore
+
+screenLock = Semaphore(value=1)
 
 
 def connScan(host, port):
+    conn = socket(AF_INET, SOCK_STREAM)
     try:
-        conn = socket(AF_INET, SOCK_STREAM)
         conn.connect((host, port))
         conn.send("Hello")  # Anything
         resp = conn.recv(100)
+        screenLock.acquire()
         print("[+] %d/tcp open" % port)
         print("[+]", resp)
-        conn.close()
     except Exception as e:
+        screenLock.acquire()
         print("[-] %d/tcp closed" % port)
+    finally:
+        screenLock.release()
+        conn.close()
 
 
 def portScan(host, ports):
@@ -26,12 +33,12 @@ def portScan(host, ports):
         host_info = gethostbyaddr(ip)  # host,alias,ips
         print("[+] Scan results for:", host_info[0])
     except Exception as e:
-        print(e)
         print("[+] Scan results for:", ip)
 
     for port in ports:
-        print("Scanning port", port)
-        connScan(host, int(port))
+        # connScan(host, int(port))
+        t = Thread(target=connScan, args=(host, int(port)))
+        t.start()
 
 
 def main():
